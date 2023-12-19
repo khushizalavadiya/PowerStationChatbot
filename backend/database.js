@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import mysql from "mysql";
@@ -19,6 +19,7 @@ import { secret, expiresIn } from "./jwtConfig.js";
 import { HuggingFaceTransformersEmbeddings } from "langchain/embeddings/hf_transformers";
 import { BufferWindowMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
+import { ChatOpenAI } from "langchain/chat_models/openai";
 // import { PromptTemplate } from "langchain/prompts";
 import {
   ChatPromptTemplate,
@@ -50,7 +51,7 @@ app.use("/protected", protectedRoutes);
 // const MySQLStoreInstance = new MySQLStore(session);
 
 const pinecone = new Pinecone({
-  apiKey: "YOUR_API_KEY", // b85bf359-ca2e-4d0a-b78e-25a41b9af846
+  apiKey: "b85bf359-ca2e-4d0a-b78e-25a41b9af846", // b85bf359-ca2e-4d0a-b78e-25a41b9af846
   // apiKey: '0f629be8-9909-4c3c-8b0f-20d4e5322ced',
   environment: "gcp-starter",
 });
@@ -660,30 +661,23 @@ async function get_chunck(username, queryResults) {
   return chunks.join("");
 }
 
-const openai_model = new OpenAI({
-  openAIApiKey: "YOUR_API_KEY",
+// const openai_model = new OpenAI({
+//   openAIApiKey: "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",
+//   temperature: 0.7,
+// });
+
+// var CHAT_HISTORY = new BufferWindowMemory({
+//   k: 3,
+// });
+var CHAT_HISTORY = [];
+// var CHAIN = new ConversationChain({
+//   llm: openai_model,
+//   memory: CHAT_HISTORY,
+// });
+const chat = new ChatOpenAI({
+  openAIApiKey: "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",
   temperature: 0.7,
 });
-
-var CHAT_HISTORY = new BufferWindowMemory({
-  k: 3,
-});
-
-var CHAIN = new ConversationChain({
-  llm: openai_model,
-  memory: CHAT_HISTORY,
-});
-
-const promptTemplate = PromptTemplate.fromTemplate(
-  "You are a Lead Substation Maintenance Technician that only answers technical queries related to electrical engineering and power substation maintenance procedures in a sophisticated format by refering to the given context, context and query delimited by triple back ticks. Politely refuse to provide answer in humorous manner if the question is not related to the  given context:```{prompt_context}``` query:```{inp}```"
-);
-
-const troubleshootTemplate = PromptTemplate.fromTemplate(
-  "If the query requires troubleshooting:\nFirstly identify the type of equipment(s) that require troubleshooting from the following query which is delimited by triple backticks.\nProvide the identified equipment(s) in one or two words.\nProvide a step-by-step guide for troubleshooting the issue in a substation.\nStart with the initial checks and proceed systematically.\nQuery: ```{userQuery}```"
-);
-
-// Prompt Templates ...
-
 app.post("/process-input", async (req, res) => {
   const userInput = req.body.input;
   const username = req.body.username;
@@ -694,19 +688,18 @@ app.post("/process-input", async (req, res) => {
   });
 
   context = await get_chunck(username, queryResults);
+  let strr = `Your task is to solve queries of topics related to general electrical sub stations. You will be provided with context delimited by '#'. Form short answers with simple and concise terms which a student of grade 8 can understand easily.`;
+  // console.log(strr);
+  strr += "#" + context + "#";
+  CHAT_HISTORY.push(new SystemMessage(strr));
+  CHAT_HISTORY.push(new HumanMessage(userInput));
+  // var response = "";
 
-  const final_prompt = await promptTemplate.format({
-    prompt_context: context,
-    inp: userInput,
-  }) + await troubleshootTemplate.format({
-    userQuery: userInput,
-  });
+  var response = await chat.call(CHAT_HISTORY.slice(-4));
+  CHAT_HISTORY.push(new AIMessage(response["content"]));
+  console.log(response["content"]);
 
-  let llm_res = await CHAIN.call({
-    input: final_prompt,
-  });
-
-  res.send(llm_res.response);
+  res.send(response["content"]);
   return;
 });
 var chunks = [];+
@@ -775,14 +768,15 @@ app.get('/getmessages/:username',(req,res)=>{
 })
 
 app.post('/testgen',(req,res)=>{
+  console.log('testcalled')
   const admin = req.body.adminid;
   const test = req.body.test;
 
   
   console.log(test);
 
-  const query = `INSERT INTO tests(adminid, test) VALUES (?,?)`;
-  connection.query(query,[admin,test],(err,result)=>{
+  const query = `INSERT INTO tests(adminid, test, time) VALUES (?,?,?)`;
+  connection.query(query,[admin,test,10],(err,result)=>{
     if(err){
       console.log(err)
       res.send('error in query');

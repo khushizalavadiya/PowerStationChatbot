@@ -1,81 +1,84 @@
 // ChatPage.jsx
-import React, { useEffect , useState} from 'react';
-import './styles.css'
+import React, { useEffect, useState } from 'react';
+import './ChatPage.css'; // Import your CSS file
 import axios from 'axios';
 
-var username;
+const ChatPage = ({ user }) => {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
 
-const ChatPage = ({user}) => {
-  console.log('user ' + user)
-  username = user;
-  const [isButtonDisabled, setButtonDisabled] = useState(false);
-  useEffect(()=>{
-    document.getElementById('user-message').focus();
-  },[])
-  const handleEnter = (e) => {
-    if(e.key === 'Enter'){
-      document.getElementById('btn').click();
+  const sendMessage = async () => {
+    if (newMessage.trim() === '') return;
+    const userMessage = { text: newMessage, sender: 'user' };
+    setMessages([...messages, userMessage]); // Add user message to the chat
+    setNewMessage('');
+
+    try {
+      const response = await axios.post('http://localhost:3001/process-input', {
+        input: newMessage,
+        username: user,
+      });
+
+      const aiResponse = response.data;
+      console.log('AI Response:', aiResponse);
+      const steps = aiResponse.split('\n'); 
+      setTimeout(() => {
+        console.log('Current Messages:', messages);
+        steps.forEach((step, index) => {
+          // Add each step as a separate message to the chat
+          setTimeout(() => {
+            setMessages(prevMessages => [
+              ...prevMessages,
+              { text: step, sender: 'ai' },
+            ]);
+          }, index * 1000); // Adjust timing for each step (e.g., 1000ms = 1 second)
+        });
+        console.log('Updated Messages:', messages);
+      }, 500);
+
+      await axios.post('http://localhost:3001/addmessages', {
+        username: user,
+        question: newMessage,
+        answer: aiResponse,
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
+
+  const handleKey = (event) => {
+    if(event.key === 'Enter'){
+      sendMessage();
     }
   }
 
-  const send = async function sendMessage() {
-    setButtonDisabled(true);
-    var userMessage = document.getElementById("user-message").value;
-    displayMessage("You: " + userMessage);
-    // console.log('username: '+username)
-    
-    document.getElementById('user-message').value = '';
-    const response = await axios.post("http://localhost:3001/process-input",{
-        input: userMessage, 
-        username: username
-      }
-    );
-    
-    displayAI(response.data);
-  }
-
-  
-  function displayMessage(message) {
-    var chatDisplay = document.getElementById("chat-display");
-    var newMessage = document.createElement("p");
-    newMessage.textContent = message;
-    newMessage.classList.add("user-message");
-    chatDisplay.appendChild(newMessage);
-    chatDisplay.scrollTop = chatDisplay.scrollHeight;
-  }
-  // Your existing displayAI function
-  function displayAI(message) {
-    var chatDisplay = document.getElementById("chat-display");
-    var newMessage = document.createElement("p");
-    newMessage.classList.add("ai-message");
-    // Set up typing animation
-    newMessage.innerHTML = '<span class="typing"></span>';
-    chatDisplay.appendChild(newMessage);
-
-    // Calculate animation duration based on message length
-    var animationDuration = Math.min(3, message.length * 0.1) + 's';
-
-    // Apply styles to the typing element
-    var typingElement = newMessage.querySelector('.typing');
-    typingElement.textContent = message;
-    typingElement.style.animation = `typing ${animationDuration} steps(${message.length}) forwards`;
-
-    // Scroll to the bottom
-    chatDisplay.scrollTop = chatDisplay.scrollHeight;
-    setButtonDisabled(false);
-  }
-
   return (
-    <div id="chat-container" className="fade-in">
-      <div id="chat-display"></div>
-      <div id="user-input">
+    <div className="chat-container">
+      {messages.length === 0 && (
+        <div className="initial-background">
+          <p className="help-text">HOW CAN I HELP U?</p>
+        </div>
+      )}
+      <div className="chat-messages">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`message ${message.sender === 'user' ? 'user-message' : 'ai-message'}`}
+          > 
+            {message.text}
+          </div>
+        ))}
+      </div>
+      <div className="input-container">
         <input
-          onKeyDown={handleEnter}
           type="text"
-          id="user-message"
-          placeholder="What is a Distribution Transformer?...."
+          onKeyDown={handleKey}
+          placeholder="Type a message..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          style={{ width: '300px' }}
         />
-        <button id='btn' onClick={send} disabled={isButtonDisabled}>Send</button>
+        <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );

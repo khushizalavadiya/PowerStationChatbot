@@ -6,8 +6,8 @@ const TestGen = ({user})=>{
     
 
     const createTest = () => {
-
         const testData = {
+            
             "questions": [
               {
                 "id": 1,
@@ -43,23 +43,22 @@ const TestGen = ({user})=>{
                 }
             ]
           };
-          
-          // Convert the test data to a string without the outer "test" key
-          const testString = JSON.stringify(testData);
 
-        axios.post('http://localhost:3001/testgen', {
+          const testString = JSON.stringify(testData)
+        // Emit the 'createTest' event to the server
+        axios.post('http://localhost:3001/testgen',{
             adminid: user,
             test: testString
-        });
+        })
     };
 
     return(
         
         <div id="main-box">
-            <button onClick={createTest}>
+            <button onClick={createTest} style={{ marginBottom: '10px' }}>
                 create test
             </button>
-            <button>
+            <button style={{ marginBottom: '10px' }}>
                 close test
             </button>
         </div>

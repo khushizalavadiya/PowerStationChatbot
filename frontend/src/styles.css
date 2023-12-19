@@ -1,7 +1,9 @@
 /* Combined Styles */
 @import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Oswald&display=swap');
+@media screen and (max-width: 480px){
 body{
   font-family: 'Oswald', sans-serif;
+  font-size: 12px; /* Modify font size for smaller screens */
 }
 /* App.css */
 .login-container {
@@ -16,11 +18,13 @@ body{
     border-radius: 8px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* Adjust the form's maximum width for smaller screens */
+   
   }
   
   h2 {
     text-align: center;
-    color: #333;
+    color: #fff;
   }
   
   label {
@@ -34,37 +38,61 @@ body{
   
 /* Navbar styles */
 nav {
-    background-color: #7A918D;
+    background-color: rgb(157 164 167 / 10%);
+    
     padding: 10px;
     min-height: 0;
     display: flex;
     justify-content: center; /* Center the content horizontally */
+    padding: 3px; /* Adjust padding for smaller screens */
+    border-bottom: 4px solid #ccc; /* Increased border thickness */
+    height: 8vh;
   }
-  
+}
+  /* Styles for the navigation links */
+ul.nav-links {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
   nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
+    height: 8vh;
   }
   
   nav li {
     margin: 0 20px;
   }
-  
+  nav li img {
+    margin-right: 5px;
+    margin-top: 5px;
+  }
+  #powerai-title {
+    font-size: 40px;
+    font-family: 'Kdam Thmor Pro', sans-serif;
+    margin-right: auto;
+    color: #fff; /* Optional: Set the color */
+  }
   nav a, .profileLink {
     text-decoration: none;
-    color: #000000;
+    color: #ccc;
     font-weight: 500;
     font-size: 1.2em;
     transition: color 0.3s ease-in-out;
+    border-bottom: 2px solid transparent; /* Initially no border */
   }
   
   nav a:hover {
-    color: #ffcc00; /* Change the hover color as needed */
+    color: #ffffff; /* Change the hover color as needed */
+    border-bottom: 2px solid #ffffff; /* Add border on hover */
   }
   .profileLink:hover{
-    color: #FF5964;
+    color: #ffffff;
   }
   
  /* ChatPage.css */
@@ -91,7 +119,7 @@ nav {
   }
   .ai-message {
     /* background-color: #0056b3; */
-    color: rgb(19, 186, 19); 
+    color:#fff; 
   }
   
   .user-message {
@@ -112,7 +140,7 @@ nav {
   }
   
   #user-message:active{
-    border-color: yellow;
+    border-color: rgb(67, 67, 8);
   }
 
   button {
@@ -121,10 +149,10 @@ nav {
   }
   .typing {
     display: inline-block;
-    white-space: pre-wrap; 
     overflow: hidden;
     font-size: 15px;
     border-right: .15em solid #000; /* Adjust border thickness */
+    white-space: nowrap;
     font-family: monospace; /* To ensure consistent character width */
   }
 
@@ -173,7 +201,7 @@ nav {
     font-family: var(--font-family);
     line-height: 1.5;
     font-weight: var(--font-weight);
-    color: rgba(0, 0, 0, 0.87);
+    color: #ffffff;
     background-color: var(--background-color-light);
   }
   
@@ -187,9 +215,12 @@ nav {
     color: var(--hover-color);
   }
   
-  h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
+  h1 
+    {
+      font-size: 2.2em;
+      line-height: 1.1;
+      text-align: center;
+      background-color: rgb(157 164 167 / 10%);
   }
   
   button {
@@ -256,7 +287,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color:#DCEED1;
+    background-color : rgb(157 164 167 / 10%);
     padding: 30px;
     border: 1px solid rgb(204, 204, 204)c5c;
     border-radius: 8px;
@@ -319,12 +350,12 @@ body,html{
 
 button {
   padding: 10px;
-  margin-top: 10px;
+  margin-top: 8;
   cursor: pointer;
 }
 
 a:hover {
-  color: #ffd700; /* Change color on hover */
+  color: #ff5100; /* Change color on hover */
   transition: 0.3s ease-in-out;
 }
 .fade-in {
@@ -341,22 +372,25 @@ a:hover {
 }
 
 body{
-  background: rgb(94,112,109);
-  background: linear-gradient(180deg, rgba(94,112,109,1) 0%, rgba(122,145,141,1) 39%, rgba(170,192,170,1) 100%);
-}
+  background: #121930;
+  background:linear-gradient(180deg,#121930 0%,    #1E2849  39%, #1E2849 100%);}
 /* #head{
   background: rgb(94,112,109);
   background: linear-gradient(180deg, rgba(94,112,109,1) 0%, rgba(122,145,141,1) 39%, rgba(170,192,170,1) 100%);
 } */
 
-#head{
-  text-align: center;
-}
+
+  #head {
+    display: flex;
+  align-items: center;
+  }
+
 #head h2 {
-  width: fit-content;
-  display: inline-block;
-  font-size: 24px;
-  transition: 0.5s ease;
+  font-size: 40px;
+  font-family: 'Kdam Thmor Pro', sans-serif;
+  text-align: left;
+  margin-right: auto; /* Pushes the "PowerAI" title to the left */
+  
 }
 
 #head h2:hover {
@@ -384,11 +418,14 @@ body{
 
 
 nav{
-  background-color: transparent;
+  background-color:rgb(157 164 167 / 10%);
 }
 
 .app-container {
-  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  background-color: rgb(157 164 167 / 10%);
 }
 
 .profile-container {

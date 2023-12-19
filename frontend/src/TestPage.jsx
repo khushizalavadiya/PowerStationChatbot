@@ -194,7 +194,7 @@ const TestPage = ({ encrypt, timer, setTimer, tests, testSelected, user, setTest
   };
 
   return (
-    <div>
+    <div id='main-box'>
       <h1>Timer: {timer} seconds</h1>
       {isSubmitted ? (
         <>

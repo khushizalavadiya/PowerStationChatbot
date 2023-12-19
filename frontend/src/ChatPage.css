@@ -1,29 +1,86 @@
-#chat-container {
-    max-width: 400px;
-    margin: 50px auto;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 8px;
-  }
-  
-  #chat-display {
-    height: 300px;
-    overflow-y: scroll;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-  }
-  
-  #user-input {
-    display: flex;
-  }
-  
-  #user-message {
-    flex-grow: 1;
-    padding: 5px;
-    margin-right: 10px;
-  }
-  
-  button {
-    padding: 5px 10px;
-    cursor: pointer;
-  }
+/* Chat container */
+.chat-container {
+  width: 65%;
+  height: 83vh;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Adjusted to show latest messages at the bottom */
+  align-items: center;
+  margin: auto;
+}
+
+/* Chat messages area */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  /* Adjusted margins and widths for better message display */
+  margin-left: 10px;
+  margin-top: 10px;
+  width: calc(100% - 20px);
+}
+
+/* Individual chat message styles */
+.message {
+  margin-bottom: 10px;
+  padding: 1px 10px;
+  border-radius: 8px;
+  max-width: 97%;
+  display: flex;
+  font-size: larger;
+}
+
+.left-message {
+  background-color: #007bff; /* User message color */
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  max-width: 70%;
+  align-self: flex-end; /* Align user messages to the right */
+}
+
+.right-message {
+  background-color: #69696f6e; /* AI message color */
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  max-width: 70%;
+  align-self: flex-start; /* Align AI messages to the left */
+}
+
+/* Input container */
+.input-container {
+  display: flex;
+  padding: 10px;
+}
+.message.user-message {
+  color: rgb(180, 180, 255);
+}
+/* Input field and send button styles */
+.input-container input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  background-color: transparent;
+  border-radius: 8px;
+  margin-right: 10px;
+  color: white;
+  height: 38px; /* Adjusted input height for better visibility */
+}
+
+/* Input field placeholder color */
+.input-container input::placeholder {
+  color: white;
+}
+
+.input-container button {
+  padding: 8px 20px; /* Adjusted button padding for a more compact size */
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
